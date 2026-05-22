@@ -10,6 +10,7 @@ const ExtractionContext = createContext(null);
 const processingStages = [
   "Normalizing image",
   "Finding document borders",
+  "Running OCR simulation",
   "Reading MRZ lines",
   "Extracting identity fields",
   "Running validation",

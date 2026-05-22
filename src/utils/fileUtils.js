@@ -1,7 +1,12 @@
 export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/bmp"];
+export const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
 
 export function isAcceptedImage(file) {
   return Boolean(file && ACCEPTED_IMAGE_TYPES.includes(file.type));
+}
+
+export function isWithinImageSizeLimit(file) {
+  return Boolean(file && file.size <= MAX_IMAGE_SIZE_BYTES);
 }
 
 export function readFileAsDataUrl(file) {

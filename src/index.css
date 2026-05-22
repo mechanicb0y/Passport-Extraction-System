@@ -258,6 +258,7 @@ pre {
 .page-title-row,
 .privacy-notice,
 .dropzone,
+.upload-helper-panel,
 .camera-panel,
 .image-preview,
 .action-panel,
@@ -266,6 +267,7 @@ pre {
 .field-editor,
 .export-panel,
 .face-match-panel,
+.selfie-panel,
 .qr-panel,
 .raw-text-panel,
 .guide-card,
@@ -466,6 +468,7 @@ pre {
   white-space: nowrap;
 }
 
+.upload-helper-panel,
 .camera-panel,
 .action-panel,
 .processing-panel,
@@ -473,10 +476,80 @@ pre {
 .field-editor,
 .export-panel,
 .face-match-panel,
+.selfie-panel,
 .qr-panel,
 .raw-text-panel,
 .info-panel {
   padding: 1rem;
+}
+
+.upload-helper-panel {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.demo-passport-button {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: center;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--text);
+  padding: 0.65rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.demo-passport-button img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #ffffff;
+  object-fit: cover;
+}
+
+.demo-passport-button span,
+.demo-passport-button strong,
+.demo-passport-button small {
+  display: block;
+}
+
+.demo-passport-button small,
+.upload-notes span {
+  color: var(--muted);
+}
+
+.demo-passport-button:hover {
+  border-color: var(--yellow-500);
+}
+
+.demo-passport-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.upload-notes {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.upload-notes div {
+  display: grid;
+  gap: 0.15rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 0.7rem;
+}
+
+.upload-notes strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .section-heading {
@@ -947,11 +1020,66 @@ pre {
 }
 
 .face-match-panel,
+.selfie-panel,
 .qr-panel {
   display: grid;
   justify-items: center;
   gap: 0.85rem;
   text-align: center;
+}
+
+.selfie-panel {
+  justify-items: stretch;
+}
+
+.selfie-upload-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.selfie-upload-control input {
+  display: none;
+}
+
+.selfie-preview {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+  gap: 0.65rem;
+  align-items: center;
+  text-align: left;
+}
+
+.selfie-preview img {
+  width: 4.5rem;
+  aspect-ratio: 1;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.selfie-preview strong,
+.selfie-preview span {
+  display: block;
+}
+
+.selfie-preview strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selfie-preview span {
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 .score-ring {

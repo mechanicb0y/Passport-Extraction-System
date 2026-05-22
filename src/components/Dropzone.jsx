@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { FileImage, UploadCloud } from "lucide-react";
-import { ACCEPTED_IMAGE_TYPES, formatBytes, isAcceptedImage } from "../utils/fileUtils.js";
+import { ACCEPTED_IMAGE_TYPES, formatBytes, MAX_IMAGE_SIZE_BYTES } from "../utils/fileUtils.js";
 
 function Dropzone({ onFileSelected, selectedFile, disabled = false }) {
   const inputRef = useRef(null);
@@ -55,7 +55,7 @@ function Dropzone({ onFileSelected, selectedFile, disabled = false }) {
       </span>
       <div>
         <h2>Drop passport image here</h2>
-        <p>JPG, PNG, WEBP, or BMP. Processing stays in this browser.</p>
+        <p>JPG, PNG, WEBP, or BMP up to {formatBytes(MAX_IMAGE_SIZE_BYTES)}. Processing stays in this browser.</p>
       </div>
       {selectedFile ? (
         <div className="selected-file">
@@ -65,7 +65,6 @@ function Dropzone({ onFileSelected, selectedFile, disabled = false }) {
         </div>
       ) : null}
       {!selectedFile ? <small className="file-hint">Click or drag a clear bio-page image.</small> : null}
-      {!selectedFile && !isAcceptedImage(selectedFile) ? null : null}
     </section>
   );
 }

@@ -7,6 +7,7 @@ import FaceMatchPanel from "../components/FaceMatchPanel.jsx";
 import FieldEditor from "../components/FieldEditor.jsx";
 import ImagePreview from "../components/ImagePreview.jsx";
 import QRCodePanel from "../components/QRCodePanel.jsx";
+import SelfieUpload from "../components/SelfieUpload.jsx";
 import ValidationPanel from "../components/ValidationPanel.jsx";
 import { useExtraction } from "../hooks/useExtractionState.jsx";
 import { useToast } from "../hooks/useToast.jsx";
@@ -83,6 +84,7 @@ function ResultsPage() {
         <aside className="results-side">
           <ImagePreview imagePreview={currentResult.imagePreview} file={{ name: currentResult.fileName, size: currentResult.fileSize }} compact />
           <FaceMatchPanel faceMatch={currentResult.faceMatch} />
+          <SelfieUpload onError={(message) => notify({ type: "warning", title: "Selfie not added", message })} />
           <QRCodePanel result={currentResult} />
           <section className="raw-text-panel">
             <div className="section-heading compact-heading">
