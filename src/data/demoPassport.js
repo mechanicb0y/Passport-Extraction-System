@@ -23,30 +23,3 @@ const demoPassportSvg = `
 </svg>`;
 
 export const demoPassportPreview = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(demoPassportSvg)}`;
-
-export async function createDemoPassportFile() {
-  const image = new Image();
-
-  await new Promise((resolve, reject) => {
-    image.onload = resolve;
-    image.onerror = () => reject(new Error("Unable to load demo passport image."));
-    image.src = demoPassportPreview;
-  });
-
-  const canvas = document.createElement("canvas");
-  canvas.width = 900;
-  canvas.height = 560;
-  const context = canvas.getContext("2d");
-  context.drawImage(image, 0, 0, canvas.width, canvas.height);
-  const preview = canvas.toDataURL("image/png", 0.95);
-  const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png", 0.95));
-
-  if (!blob) {
-    throw new Error("Unable to create demo passport file.");
-  }
-
-  return {
-    file: new File([blob], "demo-passport.png", { type: "image/png", lastModified: Date.now() }),
-    preview
-  };
-}

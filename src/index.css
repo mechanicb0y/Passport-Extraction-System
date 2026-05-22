@@ -525,11 +525,78 @@ pre {
 
 .demo-passport-button:hover {
   border-color: var(--yellow-500);
+  transform: translateY(-1px);
 }
 
 .demo-passport-button:disabled {
   cursor: not-allowed;
   opacity: 0.58;
+}
+
+.lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  background: rgba(3, 10, 20, 0.78);
+  padding: 1.25rem;
+  animation: lightboxFade 180ms ease-out;
+  backdrop-filter: blur(10px);
+}
+
+.lightbox-dialog {
+  display: grid;
+  gap: 0.9rem;
+  width: min(58rem, 100%);
+  max-height: min(90vh, 48rem);
+  overflow: hidden;
+  border: 1px solid rgba(245, 200, 76, 0.3);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 1rem;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.38);
+  animation: lightboxScale 180ms ease-out;
+}
+
+.lightbox-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.lightbox-header h2 {
+  font-size: 1.1rem;
+  line-height: 1.25;
+}
+
+.lightbox-image-frame {
+  display: grid;
+  min-height: 0;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.lightbox-image-frame img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+@keyframes lightboxFade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes lightboxScale {
+  from {
+    transform: translateY(0.5rem) scale(0.98);
+    opacity: 0;
+  }
 }
 
 .upload-notes {
@@ -1422,6 +1489,19 @@ pre {
 
   .privacy-notice svg:last-child {
     display: none;
+  }
+
+  .demo-passport-button {
+    grid-template-columns: 1fr;
+  }
+
+  .lightbox-backdrop {
+    padding: 0.65rem;
+  }
+
+  .lightbox-dialog {
+    max-height: 92vh;
+    padding: 0.75rem;
   }
 }
 

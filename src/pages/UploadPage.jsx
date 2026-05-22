@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, FileScan, Lightbulb, ShieldCheck, Sparkles } from "lucide-react";
 import CameraCapture from "../components/CameraCapture.jsx";
+import DemoPassportLightbox from "../components/DemoPassportLightbox.jsx";
 import Dropzone from "../components/Dropzone.jsx";
 import ImagePreview from "../components/ImagePreview.jsx";
 import PrivacyNotice from "../components/PrivacyNotice.jsx";
 import ProcessingSkeleton from "../components/ProcessingSkeleton.jsx";
-import { createDemoPassportFile, demoPassportPreview } from "../data/demoPassport.js";
+import { demoPassportPreview } from "../data/demoPassport.js";
 import { useExtraction } from "../hooks/useExtractionState.jsx";
 import { useToast } from "../hooks/useToast.jsx";
 import { formatBytes, isAcceptedImage, isWithinImageSizeLimit, MAX_IMAGE_SIZE_BYTES, readFileAsDataUrl } from "../utils/fileUtils.js";
@@ -18,6 +19,7 @@ function UploadPage() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [source, setSource] = useState("upload");
+  const [isDemoPreviewOpen, setIsDemoPreviewOpen] = useState(false);
 
   const handleFileSelected = async (file) => {
     if (!isAcceptedImage(file)) {
@@ -62,18 +64,6 @@ function UploadPage() {
     setImagePreview(dataUrl);
     setSource("camera");
     notify({ type: "success", title: "Image captured", message: "Camera frame is ready for extraction." });
-  };
-
-  const handleDemoLoad = async () => {
-    try {
-      const demo = await createDemoPassportFile();
-      setSelectedFile(demo.file);
-      setImagePreview(demo.preview);
-      setSource("demo");
-      notify({ type: "success", title: "Demo loaded", message: "The example passport image is ready." });
-    } catch (error) {
-      notify({ type: "warning", title: "Demo failed", message: error.message });
-    }
   };
 
   const handleRunExtraction = async () => {
@@ -125,11 +115,17 @@ function UploadPage() {
         <div className="upload-column">
           <Dropzone onFileSelected={handleFileSelected} selectedFile={selectedFile} disabled={isProcessing} />
           <section className="upload-helper-panel">
-            <button className="demo-passport-button" type="button" onClick={handleDemoLoad} disabled={isProcessing}>
+            <button
+              className="demo-passport-button"
+              type="button"
+              onClick={() => setIsDemoPreviewOpen(true)}
+              aria-haspopup="dialog"
+              aria-expanded={isDemoPreviewOpen}
+            >
               <img src={demoPassportPreview} alt="Example passport thumbnail" />
               <span>
                 <strong>Example passport image</strong>
-                <small>Click thumbnail to load a demo file</small>
+                <small>Click thumbnail to preview the sample passport</small>
               </span>
             </button>
             <div className="upload-notes">
@@ -176,6 +172,7 @@ function UploadPage() {
           {isProcessing ? <ProcessingSkeleton progress={progress} stage={stage} /> : null}
         </div>
       </div>
+      <DemoPassportLightbox isOpen={isDemoPreviewOpen} onClose={() => setIsDemoPreviewOpen(false)} />
     </div>
   );
 }

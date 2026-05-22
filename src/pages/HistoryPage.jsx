@@ -87,7 +87,7 @@ function HistoryPage() {
               <div>
                 <h2>{item.fields.fullName}</h2>
                 <p>
-                  {item.fields.passportNumber} · {item.country.country} · expires {formatDisplayDate(item.fields.expiryDate)}
+                  {item.fields.passportNumber} - {item.country.country} - expires {formatDisplayDate(item.fields.expiryDate)}
                 </p>
               </div>
               <div className="history-badges">
