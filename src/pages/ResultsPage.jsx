@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Save, Trash2 } from "lucide-react";
 import EmptyState from "../components/EmptyState.jsx";
 import ExportActions from "../components/ExportActions.jsx";
-import FaceMatchPanel from "../components/FaceMatchPanel.jsx";
 import FieldEditor from "../components/FieldEditor.jsx";
 import ImagePreview from "../components/ImagePreview.jsx";
+import QualityInsights from "../components/QualityInsights.jsx";
 import QRCodePanel from "../components/QRCodePanel.jsx";
 import SelfieUpload from "../components/SelfieUpload.jsx";
 import ValidationPanel from "../components/ValidationPanel.jsx";
@@ -46,10 +46,12 @@ function ResultsPage() {
             <ArrowLeft size={16} aria-hidden="true" />
             Upload another image
           </Link>
-          <h1>{currentResult.fields.fullName}</h1>
+          <h1>{currentResult.fields.fullName || currentResult.statusSummary?.title || "Passport extraction result"}</h1>
           <p>
-            {currentResult.country.country} passport {currentResult.fields.passportNumber}, expires{" "}
-            {formatDisplayDate(currentResult.fields.expiryDate)}.
+            {currentResult.statusSummary?.message ||
+              `${currentResult.country?.country || "Unknown country"} passport ${
+                currentResult.fields.passportNumber || "unknown number"
+              }, expires ${currentResult.fields.expiryDate ? formatDisplayDate(currentResult.fields.expiryDate) : "unknown date"}.`}
           </p>
         </div>
         <div className="toolbar-row">
@@ -66,7 +68,18 @@ function ResultsPage() {
 
       <div className="results-layout">
         <div className="results-main">
-          <ValidationPanel validation={currentResult.validation} confidence={currentResult.confidence} />
+          <QualityInsights
+            imageQuality={currentResult.imageQuality}
+            processingTimings={currentResult.processingTimings}
+            warnings={currentResult.warnings}
+            suggestedActions={currentResult.suggestedActions}
+            statusSummary={currentResult.statusSummary}
+          />
+          <ValidationPanel
+            validation={currentResult.validation}
+            confidence={currentResult.confidence}
+            ocrConfidence={currentResult.ocrConfidence}
+          />
           <FieldEditor
             fields={currentResult.fields}
             validation={currentResult.validation}
@@ -83,17 +96,16 @@ function ResultsPage() {
 
         <aside className="results-side">
           <ImagePreview imagePreview={currentResult.imagePreview} file={{ name: currentResult.fileName, size: currentResult.fileSize }} compact />
-          <FaceMatchPanel faceMatch={currentResult.faceMatch} />
           <SelfieUpload onError={(message) => notify({ type: "warning", title: "Selfie not added", message })} />
           <QRCodePanel result={currentResult} />
           <section className="raw-text-panel">
             <div className="section-heading compact-heading">
               <div>
                 <span className="eyebrow">OCR text</span>
-                <h2>Simulated raw output</h2>
+                <h2>Raw OCR output</h2>
               </div>
             </div>
-            <pre>{currentResult.rawText}</pre>
+            <pre>{currentResult.rawText || currentResult.rawOcrText}</pre>
           </section>
         </aside>
       </div>

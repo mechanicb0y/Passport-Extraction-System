@@ -1,6 +1,5 @@
 import { RefreshCw } from "lucide-react";
 import StatusPill from "./StatusPill.jsx";
-import { countryProfiles } from "../data/countryProfiles.js";
 
 const fieldGroups = [
   {
@@ -11,7 +10,7 @@ const fieldGroups = [
       { key: "surname", label: "Surname", type: "text" },
       { key: "sex", label: "Sex", type: "select", options: ["M", "F", "X"] },
       { key: "dateOfBirth", label: "Date of birth", type: "date" },
-      { key: "placeOfBirth", label: "Place of birth", type: "text" }
+      { key: "nationalityName", label: "Nationality name", type: "text" }
     ]
   },
   {
@@ -20,10 +19,10 @@ const fieldGroups = [
       { key: "documentType", label: "Document type", type: "text" },
       { key: "passportNumber", label: "Passport number", type: "text" },
       { key: "nationality", label: "Nationality", type: "text" },
-      { key: "issuingCountry", label: "Issuing country", type: "country" },
-      { key: "issueDate", label: "Issue date", type: "date" },
+      { key: "issuingCountry", label: "Issuing country", type: "text" },
       { key: "expiryDate", label: "Expiry date", type: "date" },
-      { key: "authority", label: "Authority", type: "text" }
+      { key: "issuingCountryName", label: "Issuing country name", type: "text" },
+      { key: "optionalData", label: "Optional MRZ data", type: "text" }
     ]
   },
   {
@@ -49,7 +48,7 @@ function FieldEditor({ fields, validation, fieldConfidence, onFieldChange }) {
         </div>
         <span className="subtle-inline">
           <RefreshCw size={15} aria-hidden="true" />
-          Validation updates on edit
+          Manual edits affect exports
         </span>
       </div>
 
@@ -69,17 +68,10 @@ function FieldEditor({ fields, validation, fieldConfidence, onFieldChange }) {
                   </span>
                   {field.type === "select" ? (
                     <select value={fields[field.key] ?? ""} onChange={(event) => onFieldChange(field.key, event.target.value)}>
+                      <option value="">Unknown</option>
                       {field.options.map((option) => (
                         <option key={option} value={option}>
                           {option}
-                        </option>
-                      ))}
-                    </select>
-                  ) : field.type === "country" ? (
-                    <select value={fields[field.key] ?? ""} onChange={(event) => onFieldChange(field.key, event.target.value)}>
-                      {countryProfiles.map((profile) => (
-                        <option key={profile.code} value={profile.code}>
-                          {profile.code} - {profile.country}
                         </option>
                       ))}
                     </select>

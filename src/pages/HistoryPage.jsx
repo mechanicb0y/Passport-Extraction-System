@@ -24,7 +24,7 @@ function HistoryPage() {
     }
 
     return history.filter((item) => {
-      const searchable = [item.fields.fullName, item.fields.passportNumber, item.country.country, item.fields.nationality]
+      const searchable = [item.fields.fullName, item.fields.passportNumber, item.country?.country, item.fields.nationality]
         .join(" ")
         .toLowerCase();
       return searchable.includes(normalized);
@@ -82,18 +82,18 @@ function HistoryPage() {
       <section className="history-list" aria-label="Saved extraction history">
         {filteredHistory.map((item) => (
           <article className="history-item" key={item.id}>
-            <div className="history-thumb">{item.imagePreview ? <img src={item.imagePreview} alt="" /> : <span>{item.country.code}</span>}</div>
+            <div className="history-thumb">{item.imagePreview ? <img src={item.imagePreview} alt="" /> : <span>{item.country?.code || "MRZ"}</span>}</div>
             <div className="history-content">
               <div>
-                <h2>{item.fields.fullName}</h2>
+                <h2>{item.fields.fullName || "Passport extraction"}</h2>
                 <p>
-                  {item.fields.passportNumber} - {item.country.country} - expires {formatDisplayDate(item.fields.expiryDate)}
+                  {item.fields.passportNumber || "Unknown number"} - {item.country?.country || "Unknown country"} - expires{" "}
+                  {item.fields.expiryDate ? formatDisplayDate(item.fields.expiryDate) : "unknown date"}
                 </p>
               </div>
               <div className="history-badges">
                 <StatusPill status={item.validation.status} />
                 <span>{item.validation.overallScore}% validation</span>
-                <span>{item.faceMatch.score}% face/name</span>
               </div>
             </div>
             <div className="history-actions">
@@ -109,7 +109,12 @@ function HistoryPage() {
                 <Download size={17} aria-hidden="true" />
                 JSON
               </button>
-              <button className="icon-button danger" type="button" onClick={() => removeItem(item.id)} aria-label={`Delete ${item.fields.fullName}`}>
+              <button
+                className="icon-button danger"
+                type="button"
+                onClick={() => removeItem(item.id)}
+                aria-label={`Delete ${item.fields.fullName || "passport extraction"}`}
+              >
                 <Trash2 size={17} aria-hidden="true" />
               </button>
             </div>

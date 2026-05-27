@@ -1,5 +1,5 @@
-export const HISTORY_KEY = "passport-extraction-history-v1";
-export const CURRENT_RESULT_KEY = "passport-extraction-current-v1";
+export const HISTORY_KEY = "passport-extraction-history-v2";
+export const CURRENT_RESULT_KEY = "passport-extraction-current-v2";
 const HISTORY_LIMIT = 50;
 
 function parseJson(value, fallback) {

@@ -1,21 +1,55 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import { buildQrPayload } from "../utils/exportUtils.js";
 import { CURRENT_RESULT_KEY } from "../services/storageService.js";
-import { simulatePassportExtraction } from "../services/ocrService.js";
-import { simulateFaceNameMatch, validatePassportData } from "../services/validationService.js";
+import { extractPassportImage } from "../services/extractionApi.js";
 import { useLocalStorage } from "./useLocalStorage.js";
 
 const ExtractionContext = createContext(null);
 
 const processingStages = [
-  "Normalizing image",
-  "Finding document borders",
-  "Running OCR simulation",
-  "Reading MRZ lines",
-  "Extracting identity fields",
-  "Running validation",
+  "Uploading document",
+  "Running Google Vision OCR",
+  "Detecting MRZ lines",
+  "Parsing ICAO 9303 fields",
+  "Validating passport data",
   "Preparing results"
 ];
+
+function attachClientResultData(result, imagePreview) {
+  const enrichedResult = {
+    ...result,
+    imagePreview,
+    rawText: result.rawText ?? result.rawOcrText ?? ""
+  };
+
+  return {
+    ...enrichedResult,
+    qrPayload: enrichedResult.qrPayload ?? buildQrPayload(enrichedResult)
+  };
+}
+
+function markManualEdit(validation) {
+  if (!validation) {
+    return validation;
+  }
+
+  const hasManualEditItem = validation.items?.some((item) => item.key === "manualEdit");
+  const manualEditItem = {
+    key: "manualEdit",
+    label: "Manual edit",
+    status: "review",
+    message: "One or more fields were edited locally and should be rechecked by running extraction again.",
+    confidence: 60
+  };
+  const items = hasManualEditItem ? validation.items : [...(validation.items ?? []), manualEditItem];
+
+  return {
+    ...validation,
+    status: validation.status === "valid" ? "review" : validation.status,
+    reviewCount: hasManualEditItem ? validation.reviewCount : (validation.reviewCount ?? 0) + 1,
+    items
+  };
+}
 
 export function ExtractionProvider({ children }) {
   const [currentResult, setCurrentResult] = useLocalStorage(CURRENT_RESULT_KEY, null);
@@ -39,11 +73,12 @@ export function ExtractionProvider({ children }) {
       }, 220);
 
       try {
-        const result = await simulatePassportExtraction({ file, imagePreview, source });
+        const result = await extractPassportImage({ file, source });
+        const enrichedResult = attachClientResultData(result, imagePreview);
         setProgress(100);
         setStage(processingStages[processingStages.length - 1]);
-        setCurrentResult(result);
-        return result;
+        setCurrentResult(enrichedResult);
+        return enrichedResult;
       } finally {
         window.clearInterval(timer);
         window.setTimeout(() => {
@@ -64,13 +99,11 @@ export function ExtractionProvider({ children }) {
         }
 
         const fields = { ...current.fields, [fieldName]: value };
-        const validation = validatePassportData(fields, current.rawText);
-        const faceMatch = simulateFaceNameMatch(fields, current.seed);
         const nextResult = {
           ...current,
           fields,
-          validation,
-          faceMatch,
+          [fieldName]: value,
+          validation: markManualEdit(current.validation),
           updatedAt: new Date().toISOString()
         };
 

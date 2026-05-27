@@ -1,0 +1,22 @@
+{
+  "name": "passport-extraction-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@google-cloud/vision": "^5.3.6",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "i18n-iso-countries": "^7.14.0",
+    "multer": "^2.1.1",
+    "sharp": "^0.34.5"
+  }
+}

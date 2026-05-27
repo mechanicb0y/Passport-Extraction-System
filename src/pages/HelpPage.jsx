@@ -33,15 +33,14 @@ function HelpPage() {
         <article className="info-panel">
           <div className="section-heading compact-heading">
             <div>
-              <span className="eyebrow">Simulation model</span>
+              <span className="eyebrow">OCR model</span>
               <h2>OCR and country logic</h2>
             </div>
             <FileCode2 size={21} aria-hidden="true" />
           </div>
           <p>
-            The app hashes image metadata to generate repeatable passport-like fields, chooses a country profile, builds ICAO-shaped MRZ
-            rows, and emits raw OCR text. Country detection scans the raw text for country code, country name, nationality, and authority
-            signals before falling back to the issuing country.
+            The backend sends the uploaded image to Google Vision OCR, detects TD3 passport MRZ rows in the returned text, parses ICAO
+            9303 field positions, and resolves issuing country and nationality codes when possible.
           </p>
         </article>
 
@@ -74,7 +73,7 @@ function HelpPage() {
         </div>
         <p>
           The latest result and saved history use versioned localStorage keys. JSON export contains metadata, extracted fields,
-          validation, face/name scoring, and raw OCR text. CSV export flattens the same result into a two-column table for spreadsheets.
+          validation, warnings, and raw OCR text. CSV export flattens the same result into a two-column table for spreadsheets.
         </p>
       </section>
     </div>

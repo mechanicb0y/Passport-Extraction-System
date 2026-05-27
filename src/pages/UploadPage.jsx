@@ -72,8 +72,16 @@ function UploadPage() {
       return;
     }
 
-    await runExtraction({ file: selectedFile, imagePreview, source });
-    navigate("/results");
+    try {
+      await runExtraction({ file: selectedFile, imagePreview, source });
+      navigate("/results");
+    } catch (error) {
+      notify({
+        type: "warning",
+        title: "Extraction failed",
+        message: error.message
+      });
+    }
   };
 
   const clearSelection = () => {
@@ -89,18 +97,18 @@ function UploadPage() {
           <span className="eyebrow">Secure document extraction</span>
           <h1>Passport OCR, validation, and export in one local workspace.</h1>
           <p>
-            Upload a passport bio-page image, review the simulated extraction, edit fields, and export clean JSON or CSV without sending
-            the document anywhere.
+            Upload a passport bio-page image, run Google Vision OCR through the backend, review ICAO MRZ validation, and export clean
+            JSON or CSV.
           </p>
         </div>
         <div className="hero-stats" aria-label="Application highlights">
           <span>
             <ShieldCheck size={18} aria-hidden="true" />
-            Local only
+            Server-side OCR
           </span>
           <span>
             <Sparkles size={18} aria-hidden="true" />
-            Simulated AI checks
+            ICAO MRZ checks
           </span>
           <span>
             <FileScan size={18} aria-hidden="true" />
@@ -154,7 +162,7 @@ function UploadPage() {
               <h2>{selectedFile ? "Document image loaded" : "Waiting for image"}</h2>
               <p>
                 {selectedFile
-                  ? "Extraction will create structured passport fields, validation badges, a face/name score, and a QR payload."
+                  ? "Extraction will create structured passport fields, MRZ validation badges, confidence scoring, and a QR payload."
                   : "Choose an upload or camera capture to begin the workflow."}
               </p>
             </div>

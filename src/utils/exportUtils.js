@@ -11,10 +11,19 @@ export function buildExportPayload(result) {
     fileName: result.fileName,
     country: result.country,
     confidence: result.confidence,
+    ocrConfidence: result.ocrConfidence,
+    ocrConfidenceSource: result.ocrConfidenceSource,
+    ocrConfidenceSignals: result.ocrConfidenceSignals,
+    imageQuality: result.imageQuality,
+    processingTimings: result.processingTimings,
+    statusSummary: result.statusSummary,
+    suggestedActions: result.suggestedActions,
+    failureType: result.failureType,
     fields: result.fields,
     validation: result.validation,
-    faceMatch: result.faceMatch,
-    rawText: result.rawText
+    warnings: result.warnings,
+    rawOcrText: result.rawOcrText ?? result.rawText,
+    rawText: result.rawText ?? result.rawOcrText
   };
 }
 
@@ -51,8 +60,9 @@ export function toCsv(result) {
     ["Country", payload.country?.country],
     ["Country Code", payload.country?.code],
     ["Overall Confidence", payload.confidence],
+    ["OCR Confidence", payload.ocrConfidence],
     ["Validation Score", payload.validation?.overallScore],
-    ["Face Match Score", payload.faceMatch?.score],
+    ["Warnings", (payload.warnings ?? []).join("; ")],
     ...Object.entries(payload.fields ?? {}).map(([key, value]) => [key, value])
   ];
 

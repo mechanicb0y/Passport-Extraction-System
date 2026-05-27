@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { Download, QrCode } from "lucide-react";
-import { buildSafeFileName, downloadBlob } from "../utils/exportUtils.js";
+import { buildQrPayload, buildSafeFileName, downloadBlob } from "../utils/exportUtils.js";
 
 function QRCodePanel({ result }) {
   const [qrUrl, setQrUrl] = useState("");
-  const payload = JSON.stringify(result.qrPayload, null, 0);
+  const payload = JSON.stringify(result.qrPayload ?? buildQrPayload(result), null, 0);
 
   useEffect(() => {
     let isMounted = true;

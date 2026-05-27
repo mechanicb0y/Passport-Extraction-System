@@ -2,10 +2,12 @@ import { BadgeCheck, CircleAlert, Gauge, ShieldAlert } from "lucide-react";
 import MetricTile from "./MetricTile.jsx";
 import StatusPill from "./StatusPill.jsx";
 
-function ValidationPanel({ validation, confidence }) {
+function ValidationPanel({ validation, confidence, ocrConfidence }) {
   if (!validation) {
     return null;
   }
+
+  const ocrConfidenceValue = Number.isFinite(ocrConfidence) ? `${ocrConfidence}%` : "N/A";
 
   return (
     <section className="validation-panel">
@@ -18,14 +20,15 @@ function ValidationPanel({ validation, confidence }) {
       </div>
 
       <div className="metrics-grid">
-        <MetricTile label="OCR confidence" value={`${confidence}%`} detail="Local simulation" tone="blue" />
-        <MetricTile label="Validation score" value={`${validation.overallScore}%`} detail="Rules and country profile" tone="yellow" />
+        <MetricTile label="Document confidence" value={`${confidence}%`} detail="OCR, MRZ, and validation signals" tone="blue" />
+        <MetricTile label="Google OCR" value={ocrConfidenceValue} detail="Vision confidence or derived OCR signal" tone="default" />
+        <MetricTile label="Validation score" value={`${validation.overallScore}%`} detail="ICAO 9303 backend checks" tone="yellow" />
         <MetricTile label="Valid checks" value={validation.validCount} detail="Passing signals" tone="green" />
         <MetricTile label="Review items" value={validation.reviewCount + validation.riskCount} detail="Needs attention" tone="red" />
       </div>
 
       <div className="validation-list">
-        {validation.items.map((item) => {
+        {(validation.items ?? []).map((item) => {
           const Icon = item.status === "valid" ? BadgeCheck : item.status === "review" ? CircleAlert : ShieldAlert;
 
           return (
